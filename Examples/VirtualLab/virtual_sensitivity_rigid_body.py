@@ -15,7 +15,7 @@ We use a fourier shift to shift the image by a given value, avoiding interpolati
 """
 
 # Set the amount of info printed to terminal during analysis
-logging.basicConfig(format='%(name)s:%(levelname)s:%(message)s', level=logging.INFO)
+logging.basicConfig(format="%(name)s:%(levelname)s:%(message)s", level=logging.INFO)
 
 # We use only two images, a reference and a shifted image
 n_imgs = 2
@@ -26,7 +26,7 @@ n_imgs = 2
 img = vlab.rosta_speckle((500, 500), dot_size=4, density=0.5, smoothness=3.0)
 
 # We can visualize the speckle
-plt.imshow(img,cmap=plt.cm.gray)
+plt.imshow(img, cmap=plt.cm.gray)
 plt.show(block=True)
 
 # Here are the settings for the analysis
@@ -53,7 +53,9 @@ for noise_std in noise_stds:
         noise_injector = vlab.noise.noise_injector("gaussian", sigma=noise_std)
 
         # Instantiate an image deformer
-        image_deformer = vlab.image_deformer.imageDeformer_rigid_body(amp=(shift_amp, 0.))
+        image_deformer = vlab.image_deformer.imageDeformer_rigid_body(
+            amp=(shift_amp, 0.0)
+        )
 
         # Shift the images. Note that the first one is not shifted
         shifted_images = image_deformer(img, n_imgs)
@@ -68,7 +70,16 @@ for noise_std in noise_stds:
         # We here use Q4 elements
         mesher = dic.Mesher(type="q4")
         # If you want to use a GUI, set GUI=True
-        mesh = mesher.mesh(image_stack, Xc1=20, Xc2=480, Yc1=20, Yc2=480, n_ely=num_elms, n_elx=num_elms, GUI=False)
+        mesh = mesher.mesh(
+            image_stack,
+            Xc1=20,
+            Xc2=480,
+            Yc1=20,
+            Yc2=480,
+            n_ely=num_elms,
+            n_elx=num_elms,
+            GUI=False,
+        )
 
         # Instantiate settings object and set some settings manually
         settings = dic.DICInput(mesh, image_stack)
@@ -109,19 +120,35 @@ std_std = np.std(std, axis=1)
 noise_stds = np.array(noise_stds)
 
 plt.figure()
-plt.plot(noise_stds, mean_mean, '-', color="blue")
-plt.fill_between(noise_stds, mean_mean - mean_std, mean_mean + mean_std, color="blue", alpha=0.3, linewidth=0.)
+plt.plot(noise_stds, mean_mean, "-", color="blue")
+plt.fill_between(
+    noise_stds,
+    mean_mean - mean_std,
+    mean_mean + mean_std,
+    color="blue",
+    alpha=0.3,
+    linewidth=0.0,
+)
 
 plt.xlim(left=0.0, right=np.max(noise_stds))
 plt.xlabel("Grey scale noise standard deviation [%]")
 plt.ylabel("Mean of displacement amplitude [-]", color="blue")
 
 ax2 = plt.twinx()  # instantiate a second axes that shares the same x-axis
-ax2.set_ylabel('Standard deviation of displacement field [-]', color="red")  # we already handled the x-label with ax1
-ax2.tick_params(axis='y', labelcolor="red")
+ax2.set_ylabel(
+    "Standard deviation of displacement field [-]", color="red"
+)  # we already handled the x-label with ax1
+ax2.tick_params(axis="y", labelcolor="red")
 
-ax2.plot(noise_stds, std_mean, '-', color="red")
-ax2.fill_between(noise_stds, std_mean - std_std, std_mean + std_std, color="red", alpha=0.3, linewidth=0.)
+ax2.plot(noise_stds, std_mean, "-", color="red")
+ax2.fill_between(
+    noise_stds,
+    std_mean - std_std,
+    std_mean + std_std,
+    color="red",
+    alpha=0.3,
+    linewidth=0.0,
+)
 ax2.set_ylim(bottom=0)
 
 plt.tight_layout()
