@@ -49,7 +49,7 @@ image deformer can now take an image as argument and returns a list of deformed 
 Downsampler
 -----------
 If we want to mimic the artefacts caused by camera sensors, we can downsample the images.
-I order to do this, we instantiate a downsampler::
+In order to do this, we instantiate a downsampler::
 
     downsampler = vlab.Downsampler(image_shape=image_shape, 
         factor=4, 

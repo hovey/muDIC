@@ -54,7 +54,7 @@ def linear_x(xs, _, slope=0.001, frame=1):
 
     # Center around x and y
     xs = xs.astype(float)
-    center = (xs.max() - xs.min()) / 2.
+    center = (xs.max() - xs.min()) / 2.0
 
     xs_mapped = float(frame) * slope * xs - float(frame) * slope * center
     return xs_mapped, np.zeros_like(xs_mapped)
