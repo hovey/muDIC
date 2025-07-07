@@ -8,6 +8,7 @@ from scipy import ndimage
 import imageio as io
 from natsort import natsorted
 
+
 class ImageStack(object):
     def __init__(self, image_reader, filter=None):
         """
@@ -42,7 +43,7 @@ class ImageStack(object):
             [9., 9., 9.],
             [9., 9., 9.]])
 
-         """
+        """
 
         self.logger = logging.getLogger()
         self.image_reader = image_reader
@@ -66,7 +67,7 @@ class ImageStack(object):
              A function which takes an image as input and returns an image
          kwargs :
              The arguments that should be used for the filter.
-         """
+        """
         self._filter_ = partial(filter, **kwargs)
 
     def __getitem__(self, index):
@@ -91,24 +92,31 @@ class ImageStack(object):
          ----------
          skip_frames : list or tuple
              The list of frame ids to be skipped
-         """
+        """
 
         if type(skip_frames) is not list and type(skip_frames) is not tuple:
-            raise TypeError('Frames has to be given as a list or tuple with integers')
+            raise TypeError("Frames has to be given as a list or tuple with integers")
 
         elif not all((type(ind) == int) for ind in skip_frames):
-            raise TypeError('Frame ids have to be integers')
+            raise TypeError("Frame ids have to be integers")
 
         elif max(skip_frames) > len(self._all_img_ids_) or min(skip_frames) < 0:
-            raise ValueError('Frame id outside bounds')
+            raise ValueError("Frame id outside bounds")
 
-        self._active_img_ids_ = [frame for frame in self._active_img_ids_ if frame not in skip_frames]
-        self.logger.info("Skipping frames. Length of image stack is now %i" % len(self._active_img_ids_))
+        self._active_img_ids_ = [
+            frame for frame in self._active_img_ids_ if frame not in skip_frames
+        ]
+        self.logger.info(
+            "Skipping frames. Length of image stack is now %i"
+            % len(self._active_img_ids_)
+        )
 
     def use_every_n_image(self, n):
-
         self._active_img_ids_ = self._active_img_ids_[::n]
-        self.logger.info("Using every %i frame. Length of image stack is now %i" % (n, len(self._active_img_ids_)))
+        self.logger.info(
+            "Using every %i frame. Length of image stack is now %i"
+            % (n, len(self._active_img_ids_))
+        )
 
 
 class ImageReader(object):
@@ -123,7 +131,7 @@ class ImageReader(object):
          image_paths : list
              A list of paths to images.
 
-         """
+        """
         self._image_paths_ = image_paths
         self.precision = np.float64
 
@@ -131,9 +139,9 @@ class ImageReader(object):
         return len(self._image_paths_)
 
     def __call__(self, index, rotate=False):
-        img = io.imread(self._image_paths_[index]).astype(self.precision)[::-1,:]
-        if np.ndim(img) >2:
-            img = np.average(img,axis=2)
+        img = io.imread(self._image_paths_[index]).astype(self.precision)[::-1, :]
+        if np.ndim(img) > 2:
+            img = np.average(img, axis=2)
         if not rotate:
             return img
         else:
@@ -152,7 +160,7 @@ class ImageListWrapper(object):
          images : list
              A list of images as numpy.ndarray
 
-         """
+        """
         self._images_ = images
         self.precision = np.float64
 
@@ -163,7 +171,9 @@ class ImageListWrapper(object):
         if not rotate_ang:
             return self._images_[index].astype(self.precision)
         else:
-            return ndimage.rotate(self._images_[index].astype(self.precision), angle=rotate_ang)
+            return ndimage.rotate(
+                self._images_[index].astype(self.precision), angle=rotate_ang
+            )
 
 
 def find_file_names(path, type=".png"):
@@ -181,12 +191,14 @@ def find_file_names(path, type=".png"):
      -------
     List of filenames
 
-     """
-    result = natsorted([os.path.join(path, file) for file in os.listdir(path) if file.endswith(type)])
+    """
+    result = natsorted(
+        [os.path.join(path, file) for file in os.listdir(path) if file.endswith(type)]
+    )
     return result
 
 
-def image_stack_from_folder(path_to_folder, file_type='.png'):
+def image_stack_from_folder(path_to_folder, file_type=".png"):
     """
     Make an ImageStack containing the images within a folder
 
@@ -208,18 +220,17 @@ def image_stack_from_folder(path_to_folder, file_type='.png'):
     >>> path_to_folder = r"/the/path/to/the/images/"
     >>> image_stack = image_stack_from_folder(path_to_folder,file_type=".bmp")
     ImageStack
-     """
+    """
     logger = logging.getLogger()
-    supported_filetypes = ['.png', '.bmp', '.tif','.tiff']
+    supported_filetypes = [".png", ".bmp", ".tif", ".tiff"]
 
     if type(path_to_folder) not in [str]:
-        raise TypeError('Path has to be a string')
+        raise TypeError("Path has to be a string")
 
     if type(file_type) is not str or file_type not in supported_filetypes:
         # TODO: include more valid file types
-        raise TypeError('Filetype has to be: %s' % " ".join(supported_filetypes))
+        raise TypeError("Filetype has to be: %s" % " ".join(supported_filetypes))
 
-    breakpoint()
     file_names_all = find_file_names(path_to_folder, file_type)
 
     logger.info("Found %i images in folder" % len(file_names_all))
@@ -249,11 +260,11 @@ def image_stack_from_list(image_list):
         >>> image_list = [np.random.rand(10,10) for i in range(10)]
         >>> image_stack = dic.image_stack_from_folder(image_list)
     ImageStack
-     """
+    """
     logger = logging.getLogger()
 
     if type(image_list) not in [list, tuple]:
-        raise TypeError('image_list has to be either a list or tuple')
+        raise TypeError("image_list has to be either a list or tuple")
 
     if type(image_list[0]) is not np.ndarray:
         raise TypeError("Images has to be numpy.ndarrays")
