@@ -38,8 +38,18 @@ def make_grid_Q4(c1x, c1y, c2x, c2y, nx, ny, elm):
 
     for i in range(ny):
         for j in range(nx):
-            elements.append(zip(np.around(ynodes[:] + elmheigt * i,n_decimals), np.around(xnodes[:] + elmwidth * j,n_decimals)))
-            nodes.update(zip(np.around(ynodes[:] + elmheigt * i,n_decimals), np.around(xnodes[:] + elmwidth * j,n_decimals)))
+            elements.append(
+                zip(
+                    np.around(ynodes[:] + elmheigt * i, n_decimals),
+                    np.around(xnodes[:] + elmwidth * j, n_decimals),
+                )
+            )
+            nodes.update(
+                zip(
+                    np.around(ynodes[:] + elmheigt * i, n_decimals),
+                    np.around(xnodes[:] + elmwidth * j, n_decimals),
+                )
+            )
 
     nodes = sorted(list(nodes))
 
@@ -78,12 +88,12 @@ def make_grid(c1x, c1y, c2x, c2y, ny, nx, elm):
     ny : int
         Number of elements along Y-axis
     elm : Element object
-        The element definitions   
+        The element definitions
 
      Returns
      -------
     X-coordinates of nodes, Y-Coordinates of nodes
-     """
+    """
 
     elm.set_n_nodes((nx, ny))
 
@@ -104,15 +114,14 @@ def make_grid(c1x, c1y, c2x, c2y, ny, nx, elm):
     node_x = np.array(xnod) + c1x
     node_y = np.array(ynod) + c1y
 
-    con_matrix = np.zeros((nx * ny,1),dtype=int)
-    con_matrix[:,0] = np.arange(nx*ny,dtype=int)
+    con_matrix = np.zeros((nx * ny, 1), dtype=int)
+    con_matrix[:, 0] = np.arange(nx * ny, dtype=int)
 
     return con_matrix, node_x, node_y
 
 
 class Mesher(object):
     def __init__(self, deg_e=1, deg_n=1, type="q4"):
-
         """
         Mesher utility
 
@@ -130,7 +139,7 @@ class Mesher(object):
          Returns
          -------
         Mesh :  Mehser object
-         """
+        """
 
         self.deg_e = deg_e
         self.deg_n = deg_n
@@ -139,21 +148,20 @@ class Mesher(object):
     def __gui__(self):
         from matplotlib.widgets import Button, RectangleSelector
         import matplotlib.pyplot as plt
-        plt.rcParams['font.size'] = 8
+
+        plt.rcParams["font.size"] = 8
 
         def render_mesh():
             try:
-                data.set_xdata(
-                    self._mesh_.xnodes.transpose())
-                data.set_ydata(
-                    self._mesh_.ynodes.transpose())
+                data.set_xdata(self._mesh_.xnodes.transpose())
+                data.set_ydata(self._mesh_.ynodes.transpose())
                 fig.canvas.draw()
             except:
-                print('Could not render mesh')
+                print("Could not render mesh")
                 pass
 
         def line_select_callback(eclick, erelease):
-            'eclick and erelease are the press and release events'
+            "eclick and erelease are the press and release events"
             x1, y1 = eclick.xdata, eclick.ydata
             x2, y2 = erelease.xdata, erelease.ydata
 
@@ -166,32 +174,31 @@ class Mesher(object):
             render_mesh()
 
         def toggle_selector(event):
-
-            if event.key in ['W', 'w']:
+            if event.key in ["W", "w"]:
                 self._mesh_.n_ely += 1
 
-            if event.key in ['X', 'x']:
+            if event.key in ["X", "x"]:
                 self._mesh_.n_ely -= 1
 
-            if event.key in ['A', 'a']:
+            if event.key in ["A", "a"]:
                 self._mesh_.n_elx += 1
 
-            if event.key in ['D', 'd']:
+            if event.key in ["D", "d"]:
                 self._mesh_.n_elx -= 1
 
-            if event.key in ['up']:
+            if event.key in ["up"]:
                 self._mesh_.Yc1 -= 1
                 self._mesh_.Yc2 -= 1
 
-            if event.key in ['down']:
+            if event.key in ["down"]:
                 self._mesh_.Yc1 += 1
                 self._mesh_.Yc2 += 1
 
-            if event.key in ['left']:
+            if event.key in ["left"]:
                 self._mesh_.Xc1 -= 1
                 self._mesh_.Xc2 -= 1
 
-            if event.key in ['right']:
+            if event.key in ["right"]:
                 self._mesh_.Xc1 += 1
                 self._mesh_.Xc2 += 1
 
@@ -205,7 +212,8 @@ class Mesher(object):
 
         def print_instructions():
             print(
-                'Use arraow keys to move mesh, W and X to change refinement in  Y-directions, A and D to change refinement in X-direction')
+                "Use arraow keys to move mesh, W and X to change refinement in  Y-directions, A and D to change refinement in X-direction"
+            )
 
         def ok(event):
             plt.close()
@@ -218,45 +226,77 @@ class Mesher(object):
         overview = plt.subplot2grid((12, 4), (0, 0), rowspan=11, colspan=4)
 
         n, m = self.image.shape
-        overview.imshow(self.image, cmap=plt.cm.gray, origin="lower", extent=(0, m, 0, n))
+        overview.imshow(
+            self.image, cmap=plt.cm.gray, origin="lower", extent=(0, m, 0, n)
+        )
 
-        data, = overview.plot([], [], 'ro')
-        overview.autoscale(1, 'both', 1)
+        (data,) = overview.plot([], [], "ro")
+        overview.autoscale(1, "both", 1)
 
         but_ax1 = plt.subplot2grid((12, 4), (11, 2), colspan=1)
-        ok_button = Button(but_ax1, 'OK')
+        ok_button = Button(but_ax1, "OK")
         ok_button.on_clicked(ok)
 
         but_ax2 = plt.subplot2grid((12, 4), (11, 3), colspan=1)
-        reset_button = Button(but_ax2, 'Reset')
+        reset_button = Button(but_ax2, "Reset")
 
-        rectangle = RectangleSelector(overview, line_select_callback,
-                                      drawtype='box', useblit=True,
-                                      button=[1, 3],  # don't use middle button
-                                      minspanx=5, minspany=5,
-                                      spancoords='pixels')
+        # The drawtype parameter, including the option drawtype='box', was removed from the RectangleSelector class in Matplotlib version 3.4.0. In this version, the RectangleSelector was updated to simplify its interface, and the drawtype parameter was eliminated.
+        # rectangle = RectangleSelector(
+        #     overview,
+        #     line_select_callback,
+        #     drawtype="box",
+        #     useblit=True,
+        #     button=[1, 3],  # don't use middle button
+        #     minspanx=5,
+        #     minspany=5,
+        #     spancoords="pixels",
+        # )
+        rectangle = RectangleSelector(
+            overview,
+            line_select_callback,
+            useblit=True,
+            button=[1, 3],  # don't use middle button
+            minspanx=5,
+            minspany=5,
+            spancoords="pixels",
+        )
 
-        fig.canvas.mpl_connect('key_press_event', toggle_selector)
+        fig.canvas.mpl_connect("key_press_event", toggle_selector)
 
         _widgets = [rectangle, reset_button, ok_button]
         print_instructions()
 
         plt.show(block=True)
 
-    def mesh(self, images, Xc1=0.0, Xc2=100.0, Yc1=0.0, Yc2=100., n_elx=4, n_ely=4, GUI=True, **kwargs):
+    def mesh(
+        self,
+        images,
+        Xc1=0.0,
+        Xc2=100.0,
+        Yc1=0.0,
+        Yc2=100.0,
+        n_elx=4,
+        n_ely=4,
+        GUI=True,
+        **kwargs,
+    ):
         if isinstance(images, (ImageStack)):
             self.image = images[0]
         else:
             raise TypeError("Images should be in an ImageReader instance")
 
-        if not type(Xc1) == float and type(Xc2) == float and type(Yc1) == float and type(Yc2) == float:
+        if (
+            not type(Xc1) == float
+            and type(Xc2) == float
+            and type(Yc1) == float
+            and type(Yc2) == float
+        ):
             raise TypeError("Coordinates should be given as floats")
 
         if not type(n_elx) == int and type(n_ely) == int:
             raise TypeError("Coordinates should be given as floats")
 
         if self.type == "spline":
-
             element = BSplineSurface(self.deg_e, self.deg_n, **kwargs)
 
         else:
@@ -271,7 +311,9 @@ class Mesher(object):
 
 
 class Mesh(object):
-    def __init__(self, element, corner1_x, corner2_x, corner1_y, corner2_y, n_elx, n_ely):
+    def __init__(
+        self, element, corner1_x, corner2_x, corner1_y, corner2_y, n_elx, n_ely
+    ):
         """
         Mesh class
 
@@ -297,7 +339,7 @@ class Mesh(object):
          Returns
          -------
         Mesh :  Mesh object
-         """
+        """
         self.element_def = element
 
         self.Xc1 = corner1_x
@@ -322,23 +364,49 @@ class Mesh(object):
         try:
             if isinstance(self.element_def, Q4):
                 logger.info("Using Q4 elements")
-                self.ele, self.xnodes, self.ynodes = make_grid_Q4(self.Xc1, self.Yc1, self.Xc2, self.Yc2,
-                                                                  self.n_elx,
-                                                                  self.n_ely, self.element_def)
+                self.ele, self.xnodes, self.ynodes = make_grid_Q4(
+                    self.Xc1,
+                    self.Yc1,
+                    self.Xc2,
+                    self.Yc2,
+                    self.n_elx,
+                    self.n_ely,
+                    self.element_def,
+                )
 
-                logger.info('Element contains %.1f X %.1f pixels and is divided in %i X %i ' % (
-                    (self.Xc2 - self.Xc1) / self.n_elx, (self.Yc2 - self.Yc1) / self.n_ely, self.n_elx, self.n_ely))
+                logger.info(
+                    "Element contains %.1f X %.1f pixels and is divided in %i X %i "
+                    % (
+                        (self.Xc2 - self.Xc1) / self.n_elx,
+                        (self.Yc2 - self.Yc1) / self.n_ely,
+                        self.n_elx,
+                        self.n_ely,
+                    )
+                )
 
                 self.n_nodes = len(self.xnodes)
                 self.n_elms = self.n_elx * self.n_ely
             elif isinstance(self.element_def, BSplineSurface):
                 logger.info("Using B-Spline elements")
-                self.ele, self.xnodes, self.ynodes = make_grid(self.Xc1, self.Yc1, self.Xc2, self.Yc2,
-                                                               self.n_elx,
-                                                               self.n_ely, self.element_def)
+                self.ele, self.xnodes, self.ynodes = make_grid(
+                    self.Xc1,
+                    self.Yc1,
+                    self.Xc2,
+                    self.Yc2,
+                    self.n_elx,
+                    self.n_ely,
+                    self.element_def,
+                )
 
-                logger.info('Element contains %.1f X %.1f pixels and is divided in %i X %i ' % (
-                    (self.Xc2 - self.Xc1) / self.n_elx, (self.Yc2 - self.Yc1) / self.n_ely, self.n_elx, self.n_ely))
+                logger.info(
+                    "Element contains %.1f X %.1f pixels and is divided in %i X %i "
+                    % (
+                        (self.Xc2 - self.Xc1) / self.n_elx,
+                        (self.Yc2 - self.Yc1) / self.n_ely,
+                        self.n_elx,
+                        self.n_ely,
+                    )
+                )
 
                 self.n_nodes = len(self.xnodes)
                 self.n_elms = 1
@@ -359,11 +427,11 @@ class Mesh(object):
         factor : float
             The factor which the mesh is scaled by in the y direction
 
-         """
-        center = (self.Yc2 + self.Yc1) / 2.
+        """
+        center = (self.Yc2 + self.Yc1) / 2.0
         height = self.Yc2 - self.Yc1
-        self.Yc1 = center + (height / 2.) * factor
-        self.Yc2 = center - (height / 2.) * factor
+        self.Yc1 = center + (height / 2.0) * factor
+        self.Yc2 = center - (height / 2.0) * factor
 
     def scale_mesh_x(self, factor):
         """
@@ -375,11 +443,11 @@ class Mesh(object):
         factor : float
             The factor which the mesh is scaled by in the x direction
 
-         """
-        center = (self.Xc2 + self.Xc1) / 2.
+        """
+        center = (self.Xc2 + self.Xc1) / 2.0
         height = self.Xc2 - self.Xc1
-        self.Xc1 = center + (height / 2.) * factor
-        self.Xc2 = center - (height / 2.) * factor
+        self.Xc1 = center + (height / 2.0) * factor
+        self.Xc2 = center - (height / 2.0) * factor
 
     def center_mesh_at(self, center_point_x, center_point_y):
         """
@@ -392,13 +460,13 @@ class Mesh(object):
             The center point of the mesh in the x-direction
         center_pointy : float
             The center point of the mesh in the y-direction
-         """
+        """
         width = self.Xc2 - self.Xc1
         height = self.Yc2 - self.Yc1
-        self.Xc1 = center_point_x - (width / 2.)
-        self.Xc2 = center_point_x + (width / 2.)
-        self.Yc1 = center_point_y - (height / 2.)
-        self.Yc2 = center_point_y + (height / 2.)
+        self.Xc1 = center_point_x - (width / 2.0)
+        self.Xc2 = center_point_x + (width / 2.0)
+        self.Yc1 = center_point_y - (height / 2.0)
+        self.Yc2 = center_point_y + (height / 2.0)
 
     def single_element_mesh(self):
         """

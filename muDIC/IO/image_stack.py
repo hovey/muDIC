@@ -182,7 +182,8 @@ def find_file_names(path, type=".png"):
     List of filenames
 
      """
-    return natsorted([os.path.join(path, file) for file in os.listdir(path) if file.endswith(type)])
+    result = natsorted([os.path.join(path, file) for file in os.listdir(path) if file.endswith(type)])
+    return result
 
 
 def image_stack_from_folder(path_to_folder, file_type='.png'):
@@ -218,6 +219,7 @@ def image_stack_from_folder(path_to_folder, file_type='.png'):
         # TODO: include more valid file types
         raise TypeError('Filetype has to be: %s' % " ".join(supported_filetypes))
 
+    breakpoint()
     file_names_all = find_file_names(path_to_folder, file_type)
 
     logger.info("Found %i images in folder" % len(file_names_all))

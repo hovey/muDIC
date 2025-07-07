@@ -1,9 +1,11 @@
 ![](documentation/logo.png)
+
 # µDIC: A Python toolkit for Digital Image Correlation (DIC)
+
 [![CircleCI](https://circleci.com/gh/PolymerGuy/muDIC.svg?style=svg)](https://circleci.com/gh/PolymerGuy/muDIC) [![codecov](https://codecov.io/gh/PolymerGuy/muDIC/branch/master/graph/badge.svg)](https://codecov.io/gh/PolymerGuy/muDIC) [![Documentation Status](https://readthedocs.org/projects/mudic/badge/?version=latest)](https://mudic.readthedocs.io/en/latest/?badge=latest)[![PyPI version](https://badge.fury.io/py/muDIC.svg)](https://badge.fury.io/py/muDIC)
 
-
 ## Overview
+
 This project aims at providing a “batteries included” toolkit for digital image correlation in Python. 
 The functionality you need to perform digital image correlation on experimental data as well as for doing virtual experiments are included.
 
@@ -41,17 +43,18 @@ The following changes were done in version 0.2.0:
 * Removed Perlin noise support as the package is only available for Python 2.7
 * Various bug fixes (See commit history)
 
-
-
 ## Getting Started
 
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
+
 ### Prerequisites
+
 This toolkit is tested on Python 3.7 and need all dependencies listen in requirements.txt
 
 ### Installing
 
 #### Installing by a package manager:
+
 Make sure you have Python 3 installed with pip and virtualenv
 
 Make new folder and use a terminal to make a virtual environment:
@@ -64,9 +67,9 @@ We can now install µDIC inside this environment using pip
 ```
 $ pip install muDIC
 ```
-Now, lets run all the tests included by using nosetests
+Now, lets run all the tests included by using pytest
 ```
-$ nosetests muDIC
+$ pytest
 ```
 
 
@@ -84,8 +87,8 @@ Virtual env:
 ```
 $ cd /path/to/muDIC
 $ python -m venv env
-$ source ./env/bin/activate #On Linux and Mac OS
-$ env\Scripts\activate.bat #On Windows
+$ source ./env/bin/activate # On Linux and macOS
+$ env\Scripts\activate.bat # On Windows
 $ pip install -r requirements.txt
 ```
 
@@ -95,42 +98,37 @@ The tests should always be launched to check your installation.
 
 If you installed by a package manager:
 ```
-$ nosetests muDIC #Note capital cases
+$ pytest
 ```
 
 If you cloned the repo:
 ```
 $ cd /path/to/muDIC/
-$ nosetests
+$ pytest
 ```
 
 ## Documentation
+
 Documentation is found here: [Read the docs](https://mudic.readthedocs.io/en/latest/)
 
-
 ## Our motivation
+
 The motivation for this work was the need for a transparent code which could be modified and extended easily, without digging deep into C or C++ source code. The implementation is pure python with the exception of third-party packages such as Scipy, Numy etc.
 
-
 ## Contributing
+
 Clone the repository, add your changes, add new tests and you are ready for a pull request
 
 ## Authors
+
 * **Sindre Olufsen** - *Implementation* - [PolymerGuy](https://github.com/polymerguy)
 * **Marius Endre Andersen** - *Wrote the Matlab code which was the starting point for this project*
 
 ## License
+
 This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
 
 ## Citing this project
+
 This project is described in the following paper and citation is highly appreciated
 [µDIC: An open-source toolkit for digital image correlation](https://doi.org/10.1016/j.softx.2019.100391)
-
-
-
-
-
-
-
-
-

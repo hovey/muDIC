@@ -20,10 +20,12 @@ setuptools.setup(
         'numpy',
         'Pillow',
         'dill',
-        'nose',
+        # 'nose',  # latest version 1.3.7 on 02 Jun 2025, no longer supported
+        'pytest',  # use pytest instead of nose
         'scikit-image',
         'muDIC',
-        'natsort'
+        'natsort',
+        'noise'
       ],
     classifiers=[
         "Programming Language :: Python :: 3",

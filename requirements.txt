@@ -5,10 +5,11 @@ matplotlib
 numpy
 Pillow
 dill
-nose
+pytest
 scikit-image
 codecov
 coverage
 pytest
 pytest-cov
 natsort
+noise
