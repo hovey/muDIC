@@ -35,7 +35,7 @@ The speckle image now looks like this:
 Image deformer
 --------------
 Let's now make an image deformer which stretches the image according to a deformation gradient.
-Firts, we define the deformation gradient::
+First, we define the deformation gradient::
 
     F = np.array([[1.1,.0], [0., 1.0]], dtype=np.float64)
 
