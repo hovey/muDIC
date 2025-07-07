@@ -430,6 +430,7 @@ class Visualizer(object):
             else:
                 plt.contourf(xs, ys, fvar, 50, **kwargs)
                 plt.colorbar()
+        plt.title(f"field: {field}, frame: {frame}")
         plt.show()
 
 

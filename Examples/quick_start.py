@@ -26,10 +26,11 @@ mesher = dic.Mesher(deg_e=3, deg_n=3, type="q4")
 
 # If you want to see use a GUI, set GUI=True below
 # breakpoint()
+# use_gui = False
+use_gui = True
 mesh = mesher.mesh(
-    images, Xc1=316, Xc2=523, Yc1=209, Yc2=1055, n_ely=36, n_elx=9, GUI=False
+    images, Xc1=316, Xc2=523, Yc1=209, Yc2=1055, n_ely=36, n_elx=9, GUI=use_gui
 )
-# mesh = mesher.mesh(images,Xc1=316,Xc2=523,Yc1=209,Yc2=1055,n_ely=36,n_elx=9, GUI=True)
 
 # Instantiate settings object and set some settings manually
 settings = dic.DICInput(mesh, images)
@@ -58,3 +59,5 @@ viz = dic.Visualizer(fields, images=images)
 
 # Uncomment the line below to see the results
 # viz.show(field="displacement", component = (1,1), frame=-1)
+viz.show(field="True strain", component = (1,1), frame=-1)
+

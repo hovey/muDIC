@@ -73,7 +73,7 @@ class ImageStack(object):
     def __getitem__(self, index):
         return np.array(self._filter_(self.image_reader(self._active_img_ids_[index])))
 
-    def revere_order(self):
+    def reverse_order(self):
         """
         Reverse the order of the images in the stack
 
